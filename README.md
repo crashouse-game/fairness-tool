@@ -1,24 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Crashouse Fairness Tool
+
+Client-side verifier for Crashouse crash game fairness on Solana. The UI fetches three
+transaction signatures (commit, blockhash, reveal) from a backend, pulls on-chain logs
+from a public Solana RPC, and recomputes the crash point locally so players can audit
+the flow.
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies and start the dev server:
 
 ```bash
-npm run dev
-# or
+yarn install
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You can preselect a game with query params: `/?game=111569` or `/?gameId=111569`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment Variables
+
+Copy `.env.example` to `.env` and adjust as needed.
+
+- `NEXT_PUBLIC_SOLANA_RPC_URL`
+  - Empty = mocked blockchain data (no network calls).
+  - Set to a public RPC (ex: `https://api.devnet.solana.com`) to fetch real transactions.
+- `NEXT_PUBLIC_BACKEND_URL`
+  - Empty = mocked backend data (quick picks only, no manual input).
+  - Set to a backend base URL to fetch live signatures.
+  - Optional: set to `/api` to use the local mock API route.
+- `NEXT_PUBLIC_SOURCE_URL`
+  - Link shown in the header (optional).
+
+## Backend Contract
+
+The UI calls `GET {BACKEND_URL}/fairness/{gameId}` and expects:
+
+```json
+{
+	"gameId": "111569",
+	"commitTx": "tx_signature_1",
+	"blockhashTx": "tx_signature_2",
+	"revealTx": "tx_signature_3",
+	"network": "devnet"
+}
+```
+
+## Scripts
+
+```bash
+yarn dev
+yarn build
+yarn start
+yarn lint
+yarn typecheck
+yarn format:check
+```
 
 ## Learn More
 
