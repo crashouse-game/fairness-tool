@@ -1,3 +1,4 @@
+import { EDGE_BPS } from "@/lib/config";
 import { computeCrashPointFromValues } from "@/lib/crashPoint";
 import { hexToBytes } from "@/lib/bytes";
 import type { SolanaTransaction } from "@/lib/types";
@@ -32,7 +33,11 @@ const buildDemoTransactions = async () => {
 	for (const [index, game] of demoGames.entries()) {
 		const roundId = BigInt(game.gameId);
 		const offset = index * 180;
-		const crashResult = await computeCrashPointFromValues(game.blockhash, game.localSecret);
+		const crashResult = await computeCrashPointFromValues(
+			game.blockhash,
+			game.localSecret,
+			EDGE_BPS,
+		);
 		const commitHash = hexToBytes(crashResult.commitHashHex);
 
 		const preparedLog = encodeCrashRoundPreparedLog({

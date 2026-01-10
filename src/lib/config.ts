@@ -28,6 +28,23 @@ export const DEFAULT_SOLANA_RPC_URL = resolveRpcUrl(rpcSetting);
 export const APP_MODE = resolveMode(DEFAULT_SOLANA_RPC_URL);
 export const IS_MOCKED_MODE = APP_MODE === "mocked";
 
+const EDGE_BPS_DEFAULT = 100n;
+
+const parseEdgeBps = (value?: string) => {
+	const trimmed = (value ?? "").trim();
+	if (!trimmed) {
+		return EDGE_BPS_DEFAULT;
+	}
+
+	try {
+		return BigInt(trimmed);
+	} catch {
+		return EDGE_BPS_DEFAULT;
+	}
+};
+
+export const EDGE_BPS = parseEdgeBps(process.env.NEXT_PUBLIC_EDGE_BPS);
+
 const normalizeBackendUrl = (value?: string) => (value ?? "").trim();
 
 export const BACKEND_URL = normalizeBackendUrl(process.env.NEXT_PUBLIC_BACKEND_URL);

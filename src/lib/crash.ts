@@ -1,4 +1,5 @@
 import { bytesToHex } from "./bytes";
+import { EDGE_BPS } from "./config";
 import { computeCrashPointFromValues } from "./crashPoint";
 import type { CrashComputationResult, SolanaTransaction } from "./types";
 
@@ -40,7 +41,12 @@ export const computeCrashPoint = async ({
 	}
 
 	try {
-		const result = await computeCrashPointFromValues(publicRandomValue, localSecret, edgeBps);
+		const resolvedEdgeBps = edgeBps ?? EDGE_BPS;
+		const result = await computeCrashPointFromValues(
+			publicRandomValue,
+			localSecret,
+			resolvedEdgeBps,
+		);
 
 		let verified = true;
 		let message = "Crash point computed.";

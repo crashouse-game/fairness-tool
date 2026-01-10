@@ -31,6 +31,8 @@ Copy `.env.example` to `.env` and adjust as needed.
   - Optional: set to `/api` to use the local mock API route.
 - `NEXT_PUBLIC_SOURCE_URL`
   - Link shown in the header (optional).
+- `NEXT_PUBLIC_EDGE_BPS`
+  - House edge in basis points (default `100`).
 
 ## Backend Contract
 
