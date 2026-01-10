@@ -22,12 +22,17 @@ type FairnessState = {
 
 export const useFairness = (gameId: string, options: UseFairnessOptions = {}) => {
 	const requestId = useRef(0);
+	const lastResolvedGameId = useRef<string | null>(null);
 	const [state, setState] = useState<FairnessState>({ status: "idle" });
 
 	const verify = useCallback(async () => {
 		const trimmedGameId = gameId.trim();
 		if (!trimmedGameId) {
 			setState({ status: "error", error: "Missing game number." });
+			return;
+		}
+
+		if (state.status === "ready" && lastResolvedGameId.current === trimmedGameId) {
 			return;
 		}
 
@@ -59,6 +64,7 @@ export const useFairness = (gameId: string, options: UseFairnessOptions = {}) =>
 				return;
 			}
 
+			lastResolvedGameId.current = trimmedGameId;
 			setState({
 				status: "ready",
 				data: {
@@ -81,7 +87,7 @@ export const useFairness = (gameId: string, options: UseFairnessOptions = {}) =>
 				error: error instanceof Error ? error.message : "Unknown error.",
 			});
 		}
-	}, [gameId, options.backendClient, options.solanaClient]);
+	}, [gameId, options.backendClient, options.solanaClient, state.status]);
 
 	useEffect(() => {
 		if (!options.auto) {

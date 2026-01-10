@@ -22,7 +22,10 @@ type RpcRequest<T> = {
 };
 
 type RpcClient = {
-	getTransaction: (signature: string, config: Record<string, unknown>) => RpcRequest<RpcTransactionResult>;
+	getTransaction: (
+		signature: string,
+		config: Record<string, unknown>,
+	) => RpcRequest<RpcTransactionResult>;
 };
 
 export const createSolanaClient = ({
