@@ -1,70 +1,66 @@
+import { createSolanaRpc } from "@solana/kit";
 import { DEFAULT_SOLANA_RPC_URL } from "@/lib/config";
 import type { SolanaTransaction } from "@/lib/types";
 
 export type SolanaClient = {
 	getTransaction: (signature: string) => Promise<SolanaTransaction>;
+	getTransactions: (signatures: string[]) => Promise<SolanaTransaction[]>;
 };
 
 type SolanaClientOptions = {
 	rpcUrl?: string;
-	fetchFn?: typeof fetch;
 };
 
-type RpcResponse<T> = {
-	result?: T;
-	error?: { message?: string };
+type RpcTransactionResult = {
+	slot?: number | bigint;
+	blockTime?: number | bigint | null;
+	meta?: { err?: unknown; logMessages?: string[] | null };
+} | null;
+
+type RpcRequest<T> = {
+	send: () => Promise<T>;
+};
+
+type RpcClient = {
+	getTransaction: (signature: string, config: Record<string, unknown>) => RpcRequest<RpcTransactionResult>;
 };
 
 export const createSolanaClient = ({
 	rpcUrl = DEFAULT_SOLANA_RPC_URL,
-	fetchFn = fetch,
 }: SolanaClientOptions = {}): SolanaClient => {
+	const rpc = createSolanaRpc(rpcUrl) as unknown as RpcClient;
+	const config = {
+		commitment: "confirmed",
+		maxSupportedTransactionVersion: 0,
+		encoding: "json",
+	} as const;
+
+	const fetchTransaction = async (signature: string) => {
+		const result = await rpc.getTransaction(signature, config).send();
+		if (!result) {
+			throw new Error("Transaction not found.");
+		}
+
+		const toNumber = (value: number | bigint | null | undefined) => {
+			if (value === null || value === undefined) {
+				return null;
+			}
+			return typeof value === "bigint" ? Number(value) : value;
+		};
+
+		return {
+			signature,
+			slot: toNumber(result.slot),
+			blockTime: toNumber(result.blockTime),
+			err: result.meta?.err ?? null,
+			logs: result.meta?.logMessages ?? [],
+			raw: result,
+		};
+	};
+
 	return {
-		async getTransaction(signature) {
-			const response = await fetchFn(rpcUrl, {
-				method: "POST",
-				headers: { "content-type": "application/json" },
-				body: JSON.stringify({
-					jsonrpc: "2.0",
-					id: 1,
-					method: "getTransaction",
-					params: [
-						signature,
-						{
-							maxSupportedTransactionVersion: 0,
-							commitment: "confirmed",
-						},
-					],
-				}),
-			});
-
-			if (!response.ok) {
-				throw new Error(`RPC error (${response.status}).`);
-			}
-
-			const payload = (await response.json()) as RpcResponse<{
-				slot?: number;
-				blockTime?: number;
-				meta?: { err?: unknown; logMessages?: string[] };
-			} | null>;
-
-			if (payload.error) {
-				throw new Error(payload.error.message ?? "RPC error.");
-			}
-
-			if (!payload.result) {
-				throw new Error("Transaction not found.");
-			}
-
-			return {
-				signature,
-				slot: payload.result.slot ?? null,
-				blockTime: payload.result.blockTime ?? null,
-				err: payload.result.meta?.err ?? null,
-				logs: payload.result.meta?.logMessages ?? [],
-				raw: payload.result,
-			};
-		},
+		getTransaction: fetchTransaction,
+		getTransactions: (signatures) => Promise.all(signatures.map(fetchTransaction)),
 	};
 };
 
@@ -128,6 +124,23 @@ export const createMockSolanaClient = (options: MockSolanaOptions = {}): SolanaC
 				...fallback,
 				signature,
 			};
+		},
+		async getTransactions(signatures) {
+			const dataset = await resolveTransactions();
+			if (Object.keys(dataset).length === 0) {
+				return signatures.map((signature) => ({
+					...fallback,
+					signature,
+				}));
+			}
+
+			return signatures.map((signature) => {
+				const match = dataset[signature];
+				if (!match) {
+					throw new Error(`Mock transaction not found: ${signature}`);
+				}
+				return match;
+			});
 		},
 	};
 };

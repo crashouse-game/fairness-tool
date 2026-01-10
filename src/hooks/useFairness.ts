@@ -38,10 +38,10 @@ export const useFairness = (gameId: string, options: UseFairnessOptions = {}) =>
 			const backendClient = options.backendClient ?? getBackendClient();
 			const solanaClient = options.solanaClient ?? getSolanaClient();
 			const backend = await backendClient.fetchGameById(trimmedGameId);
-			const [commitTx, blockhashTx, revealTx] = await Promise.all([
-				solanaClient.getTransaction(backend.commitTx),
-				solanaClient.getTransaction(backend.blockhashTx),
-				solanaClient.getTransaction(backend.revealTx),
+			const [commitTx, blockhashTx, revealTx] = await solanaClient.getTransactions([
+				backend.commitTx,
+				backend.blockhashTx,
+				backend.revealTx,
 			]);
 
 			const crashInputs = extractCrashInputs({ commitTx, blockhashTx, revealTx });
