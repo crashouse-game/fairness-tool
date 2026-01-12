@@ -1,5 +1,6 @@
 "use client";
 
+import { Check, Files } from "lucide-react";
 import { useState } from "react";
 
 type CopyButtonProps = {
@@ -24,23 +25,14 @@ const CopyButton = ({ value }: CopyButtonProps) => {
 			type="button"
 			onClick={handleCopy}
 			aria-label="Copy transaction signature"
-			className="rounded-full border border-white/10 p-2 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
+			className="text-purple hover:text-purple/70 transition"
 		>
 			{copied ? (
-				<span aria-hidden="true">Copied</span>
+				<span aria-hidden="true">
+					<Check size={18} />
+				</span>
 			) : (
-				<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" className="h-4 w-4">
-					<path
-						d="M9 8a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2V8Z"
-						stroke="currentColor"
-						strokeWidth="1.5"
-					/>
-					<path
-						d="M15 6V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h1"
-						stroke="currentColor"
-						strokeWidth="1.5"
-					/>
-				</svg>
+				<Files size={18} />
 			)}
 		</button>
 	);

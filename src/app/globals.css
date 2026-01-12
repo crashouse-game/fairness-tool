@@ -3,17 +3,39 @@
 :root {
 	--background: #0b0b14;
 	--foreground: #f4f4f5;
+	--color-text-primary: #f4f2fc;
+	--color-text-secondary: #858a92;
+	--color-main-purple: #6b5fc4;
+	--color-purple-800: #513eb0;
+	--color-main-green: #55e1d5;
 }
 
 @theme inline {
+	/* colors */
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
-	--font-sans: var(--font-sora);
+	--color-primary: var(--color-text-primary);
+	--color-secondary: var(--color-text-secondary);
+	--color-purple: var(--color-main-purple);
+	--color-purple-800: var(--color-purple-800);
+	--color-green: var(--color-main-green);
+	/* fonts */
+	--font-sans: var(--font-poppins);
 	--font-mono: var(--font-jetbrains-mono);
+	/* backgrounds */
+	--background-image-copper-gradient: radial-gradient(
+		120% 120% at 50% 10%,
+		#392a86 25%,
+		#100f14 80%
+	);
+	--background-image-copper-gradient-mobile: linear-gradient(#392a86 5%, #100f14 100%);
+	--background-image-background-gradient: linear-gradient(180deg, #1b1831 0%, #0c0a10 80%);
+	--background-image-primary-button: linear-gradient(180deg, #513eb0 0%, #392a86 100%);
+	--background-image-primary-button-hover: linear-gradient(180deg, #6b5fc4 0%, #392a86 100%);
 }
 
 body {
-	background: var(--background);
+	background: var(--background-image-background-gradient);
 	color: var(--foreground);
 	font-family: var(--font-sans), sans-serif;
 }

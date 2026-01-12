@@ -1,3 +1,5 @@
+import type { LucideIcon } from "lucide-react";
+
 export type GameId = string;
 
 export type DataMode = "mainnet" | "devnet" | "mocked";
@@ -42,6 +44,7 @@ export type FairnessStatus = "idle" | "loading" | "ready" | "error";
 export type TimelineItem = {
 	id: string;
 	label: string;
+	icon?: LucideIcon;
 	timestamp?: number | null;
 	signature?: string;
 	status: "pending" | "ok" | "error";

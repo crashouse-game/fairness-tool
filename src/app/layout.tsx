@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Sora } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 
-const sora = Sora({
+const poppins = Poppins({
 	subsets: ["latin"],
 	display: "swap",
-	variable: "--font-sora",
-});
-
-const jetBrainsMono = JetBrains_Mono({
-	subsets: ["latin"],
-	display: "swap",
-	variable: "--font-jetbrains-mono",
+	variable: "--font-poppins",
+	weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -26,7 +21,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${sora.variable} ${jetBrainsMono.variable} antialiased`}>{children}</body>
+			<body className={`${poppins.variable} antialiased`}>{children}</body>
 		</html>
 	);
 }
