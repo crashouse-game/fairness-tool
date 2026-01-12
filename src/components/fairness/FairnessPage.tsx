@@ -160,8 +160,10 @@ const FairnessPage = ({ initialGameId = "" }: FairnessPageProps) => {
 								<input
 									type="text"
 									value={gameId}
-									onChange={(event) => setGameId(event.target.value)}
+									onChange={(event) => setGameId(event.target.value.replace(/\D+/g, ""))}
 									placeholder="Game number"
+									inputMode="numeric"
+									pattern="[0-9]*"
 									className="w-30 rounded-md border border-white/10 bg-white/5 px-4 py-1 text-center text-sm text-white transition outline-none focus:border-violet-400/70"
 								/>
 							</form>
