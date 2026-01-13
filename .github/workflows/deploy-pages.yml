@@ -17,6 +17,15 @@ concurrency:
 
 jobs:
   build:
+    environment:
+      name: github-pages
+    env:
+      NEXT_STATIC_EXPORT: "true"
+      NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH || format('/{0}', github.event.repository.name) }}
+      NEXT_PUBLIC_BACKEND_URL: ${{ vars.NEXT_PUBLIC_BACKEND_URL }}
+      NEXT_PUBLIC_SOLANA_RPC_URL: ${{ vars.NEXT_PUBLIC_SOLANA_RPC_URL }}
+      NEXT_PUBLIC_EDGE_BPS: ${{ vars.NEXT_PUBLIC_EDGE_BPS }}
+      NEXT_PUBLIC_SOURCE_URL: ${{ vars.NEXT_PUBLIC_SOURCE_URL }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,10 +43,15 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Debug env vars
+        run: |
+          echo "NEXT_PUBLIC_BASE_PATH=${NEXT_PUBLIC_BASE_PATH}"
+          echo "NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}"
+          echo "NEXT_PUBLIC_SOLANA_RPC_URL=${NEXT_PUBLIC_SOLANA_RPC_URL}"
+          echo "NEXT_PUBLIC_EDGE_BPS=${NEXT_PUBLIC_EDGE_BPS}"
+          echo "NEXT_PUBLIC_SOURCE_URL=${NEXT_PUBLIC_SOURCE_URL}"
+
       - name: Build static site
-        env:
-          NEXT_STATIC_EXPORT: "true"
-          NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH || format('/{0}', github.event.repository.name) }}
         run: |
           yarn build
           touch ./out/.nojekyll
