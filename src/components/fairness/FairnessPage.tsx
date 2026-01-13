@@ -155,8 +155,11 @@ const FairnessPage = ({ initialGameId = "" }: FairnessPageProps) => {
 							</div>
 						) : null}
 						{showManualGameInput ? (
-							<form onSubmit={handleSubmit} className="grid grid-cols-2 items-baseline gap-3">
-								<p className="text-sm">Enter the game&apos;s id to verify</p>
+							<form
+								onSubmit={handleSubmit}
+								className="grid grid-cols-2 items-baseline gap-3 md:flex"
+							>
+								<p className="text-sm">Enter the game id to verify</p>
 								<input
 									type="text"
 									value={gameId}
@@ -164,7 +167,7 @@ const FairnessPage = ({ initialGameId = "" }: FairnessPageProps) => {
 									placeholder="Game number"
 									inputMode="numeric"
 									pattern="[0-9]*"
-									className="w-full justify-items-start rounded-md border border-white/10 bg-white/5 px-4 py-1 text-center text-sm text-white transition outline-none focus:border-violet-400/70"
+									className="w-full justify-items-start rounded-md border border-white/10 bg-white/5 px-4 py-1 text-center text-sm text-white transition outline-none focus:border-violet-400/70 md:w-1/2"
 								/>
 							</form>
 						) : null}
