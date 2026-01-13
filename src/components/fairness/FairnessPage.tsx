@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Blocks, Check, Dices, FileCheck, FileLock, Gamepad2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { DEFAULT_NETWORK, SOURCE_URL } from "@/lib/config";
 import { formatCrashPoint } from "@/lib/format";
 import type { TimelineItem } from "@/lib/types";
@@ -27,12 +28,31 @@ const FairnessPage = ({ initialGameId = "" }: FairnessPageProps) => {
 	const resolvedInitialGameId = initialGameId.trim() || (hasGameOptions ? defaultGameId : "");
 	const [gameId, setGameId] = useState(resolvedInitialGameId);
 	const autoVerifyGameId = useRef(resolvedInitialGameId || null);
+	const didSetFromSearchParams = useRef(false);
 	const didAutoVerify = useRef(false);
 	const rpcLabel = getRpcLabel();
 	const showManualGameInput = shouldShowManualGameInput();
 	const isMobile = useIsMobile();
+	const searchParams = useSearchParams();
 
 	const { data, error, hasError, isLoading, isReady, verify } = useFairness(gameId);
+
+	// Initialize from URL search params when no initial game id was provided
+	useEffect(() => {
+		if (resolvedInitialGameId || didSetFromSearchParams.current) {
+			return;
+		}
+
+		const fromParams = searchParams.get("game") ?? searchParams.get("gameId") ?? "";
+		const trimmed = fromParams.trim();
+		if (!trimmed) {
+			return;
+		}
+
+		didSetFromSearchParams.current = true;
+		autoVerifyGameId.current = trimmed;
+		setGameId(trimmed);
+	}, [resolvedInitialGameId, searchParams]);
 
 	useEffect(() => {
 		if (didAutoVerify.current) {
