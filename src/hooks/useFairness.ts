@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { computeCrashPoint } from "@/lib/crash";
 import type { FairnessData, FairnessStatus } from "@/lib/types";
 import { extractCrashInputs } from "@/services/crashEvents";
@@ -9,7 +9,6 @@ import type { BackendClient } from "@/services/backend";
 import type { SolanaClient } from "@/services/solana";
 
 type UseFairnessOptions = {
-	auto?: boolean;
 	backendClient?: BackendClient;
 	solanaClient?: SolanaClient;
 };
@@ -88,18 +87,6 @@ export const useFairness = (gameId: string, options: UseFairnessOptions = {}) =>
 			});
 		}
 	}, [gameId, options.backendClient, options.solanaClient, state.status]);
-
-	useEffect(() => {
-		if (!options.auto) {
-			return;
-		}
-
-		if (!gameId.trim()) {
-			return;
-		}
-
-		verify();
-	}, [gameId, options.auto, verify]);
 
 	return {
 		...state,

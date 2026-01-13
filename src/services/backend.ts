@@ -27,7 +27,33 @@ export const createBackendClient = ({
 			});
 
 			if (!response.ok) {
-				throw new Error(`Backend error (${response.status}).`);
+				const contentType = response.headers.get("content-type") ?? "";
+				let errorDetail: string | undefined;
+
+				if (response.status === 404) {
+					throw new Error("Game not found. Please check the game ID and try again.");
+				} else if (response.status === 500) {
+					throw new Error("Internal server error. Please try again later.");
+				}
+
+				try {
+					if (contentType.includes("application/json")) {
+						const body = (await response.json()) as { error?: unknown };
+						if (typeof body?.error === "string") {
+							errorDetail = body.error;
+						}
+					} else {
+						const text = await response.text();
+						errorDetail = text ? text.trim() : undefined;
+					}
+				} catch {
+					// ignore parsing errors
+				}
+
+				const message = errorDetail
+					? `Backend error (${response.status}): ${errorDetail}`
+					: `Backend error (${response.status}).`;
+				throw new Error(message);
 			}
 
 			return (await response.json()) as BackendGameResponse;
