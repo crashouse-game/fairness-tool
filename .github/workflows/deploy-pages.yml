@@ -17,6 +17,8 @@ concurrency:
 
 jobs:
   build:
+    environment:
+      name: github-pages
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,6 +35,14 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Debug env vars
+        run: |
+          echo "NEXT_PUBLIC_BASE_PATH=${NEXT_PUBLIC_BASE_PATH}"
+          echo "NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}"
+          echo "NEXT_PUBLIC_SOLANA_RPC_URL=${NEXT_PUBLIC_SOLANA_RPC_URL}"
+          echo "NEXT_PUBLIC_EDGE_BPS=${NEXT_PUBLIC_EDGE_BPS}"
+          echo "NEXT_PUBLIC_SOURCE_URL=${NEXT_PUBLIC_SOURCE_URL}"
 
       - name: Build static site
         env:
