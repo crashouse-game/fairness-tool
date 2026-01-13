@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Blocks, Check, Dices, FileCheck, Gamepad2, Lock } from "lucide-react";
+import { Blocks, Check, Dices, FileCheck, FileLock, Gamepad2 } from "lucide-react";
 import { DEFAULT_NETWORK, SOURCE_URL } from "@/lib/config";
 import { formatCrashPoint } from "@/lib/format";
 import type { TimelineItem } from "@/lib/types";
@@ -67,7 +67,7 @@ const FairnessPage = ({ initialGameId = "" }: FairnessPageProps) => {
 		{
 			id: "commit",
 			label: "Game secret committed",
-			icon: Lock,
+			icon: FileLock,
 			timestamp: data?.transactions.commit?.blockTime ?? null,
 			signature: data?.backend.commitTx,
 			status: txStatus(data?.transactions.commit),
